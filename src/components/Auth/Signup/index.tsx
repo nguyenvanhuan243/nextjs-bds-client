@@ -3,25 +3,46 @@ import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
 import React, { useState } from "react";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSignup = () => {
-    axios.post("http://localhost:3001/api/create-new-user", {
-      email,
-      password,
+    const formatEmail = email.trim();
+    const formatPassword = password.trim();
+    axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/create-new-user`, {
+      email: formatEmail,
+      password: formatPassword,
     }).then((res) => {
       if (res.status === 201) {
-        alert("User created successfully");
+        toast.success("User created successfully", {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
         window.location.replace("/signin");
       } else {
-        alert("User creation failed");
+        toast.error("User creation failed", {
+          position: "top-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
       }
     }).catch((err) => {
-      console.log("err #############", err);
-      alert(err.response.data.message[0]);
+      toast.error(err.response.data.message[0], {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
     });
   };
 
@@ -97,6 +118,7 @@ const Signup = () => {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </section>
     </>
   );
